@@ -1,0 +1,7 @@
+
+desc "Automatic Beta Deployment"
+desc "Multiple lines"
+lane :beta do
+  sigh
+  gym(scheme: "Example", force: true)
+end

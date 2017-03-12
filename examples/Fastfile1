@@ -1,3 +1,6 @@
+before_all do
+  git_pull
+end
 
 desc "Automatic Beta Deployment"
 desc "Multiple lines"
@@ -7,8 +10,20 @@ lane :beta do
 end
 
 platform :ios do
+  before_all do
+    cocoapods
+  end
+
   lane :appstore do
     slack(something: true)
+  end
+
+  after_all do
+    slack
+  end
+
+  error do
+    slack(success: false)
   end
 end
 

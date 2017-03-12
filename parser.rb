@@ -27,12 +27,17 @@ class Parser
   # @!group DSL
   #####################################################
 
+  def platform(platform_name, &block)
+    @current_platform = platform_name
+    block.call
+    @current_platform = nil
+  end
+
   def lane(lane_name, &block)
     description = @current_description
-    platform = :ios # TODO
 
-    self.tree[platform] ||= {}
-    self.tree[platform][lane_name] = {
+    self.tree[@current_platform] ||= {}
+    self.tree[@current_platform][lane_name] = {
       description: description,
       actions: []
     }
@@ -48,8 +53,7 @@ class Parser
   end
 
   def method_missing(method_sym, *arguments, &_block)
-    platform = :ios # TODO
-    current_lane = self.tree[platform].values.last
+    current_lane = self.tree[@current_platform].values.last
     current_lane[:actions] << {
       action: method_sym,
       parameters: arguments.first

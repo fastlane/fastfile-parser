@@ -5,3 +5,15 @@ lane :beta do
   sigh
   gym(scheme: "Example", force: true)
 end
+
+platform :ios do
+  lane :appstore do
+    slack(something: true)
+  end
+end
+
+platform :android do
+  lane :play do
+    gradle(task: "yolo")
+  end
+end

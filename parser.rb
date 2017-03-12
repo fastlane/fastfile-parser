@@ -71,7 +71,7 @@ module Fastlane
 
     def error
       @current_lane = :_error_block_
-      yield
+      yield(@current_lane, Exception.new)
       @current_lane = nil
     end
 

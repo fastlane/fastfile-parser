@@ -1,0 +1,117 @@
+fastlane_version "1.10.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    ENV["SLACK_URL"] ||= "https://hooks.slack.com/services/..."
+
+    cocoapods
+  end
+
+  desc "Responsible for building and signing the app"
+  private_lane :build_app do |options|
+    # Download the provisioning profile for the app
+    sigh(output_path: "./fastlane/profiles") # Distribution Profile
+
+    # Download the provisioning profile
+    sigh(
+      output_path: "./fastlane/profiles",
+      app_identifier: "com.producthunt.producthuntbundleid.TodayExtension-FeaturedPosts"
+    )
+
+    increment_build_number # version bump
+
+    gym(
+      workspace: "ProductHunt.xcworkspace",
+      scheme: "Release"
+    )
+  end
+
+  desc "Runs the tests of the iOS App"
+  lane :test do
+    xctest(
+      workspace: './ProductHunt.xcworkspace',
+      scheme: 'Debug',
+      sdk: 'iphonesimulator',
+      destination: "name=iPhone 5"
+    )
+  end
+
+  desc "Build and upload a new build to Apple TestFlight"
+  desc "This action will also do a build version bump and push it to git."
+  desc "This will **not** send an email to all testers, it will only be uploaded to the new TestFlight."
+  lane :beta do
+    build_app
+
+    pilot
+
+    commit_version_bump(
+      message: 'Build Version Bump by fastlane',
+      force: true
+    )
+
+    build_number = 3 # Actions.lane_context[Actions::SharedValues::BUILD_NUMBER]
+    add_git_tag(tag: "testflight-#{build_number}")
+
+    push_to_git_remote
+  end
+
+  desc "Submit a new version to the App Store"
+  desc "This will do the following: "
+  desc "- Make sure the profiles are up to date and download the latest one"
+  desc "- Do a build version bump and push it"
+  desc "- Create new screenshots and store them in `./fastlane/screenshots`"
+  desc "- Collect the app metadata from `./fastlane/metadata`"
+  desc "- Upload screenshots + app metadata"
+  desc "- Build, sign and upload the app"
+  desc "This will **not** submit the app for review."
+  lane :appstore do
+    snapshot
+
+    build_app
+
+    deliver(
+      skip_deploy: true, 
+      force: true
+    )
+
+    commit_version_bump(
+      message: 'Version Bump by fastlane',
+      force: true
+    )
+
+    build_number = 1 # Actions.lane_context[Actions::SharedValues::BUILD_NUMBER]
+    add_git_tag(tag: "appstore-#{build_number}")
+
+    push_to_git_remote
+  end
+
+  desc "Creates a new push certificate, ready to be uploaded to parse"
+  lane :push do
+    pem(generate_p12: true)
+    puts "------------------ Please upload the .p12 file to parse.com ------------------ "
+  end
+
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful 
+    slack(
+      message: "fastlane was successful :rocket:",
+      success: true,
+      default_payloads: [:lane, :test_result, :git_branch, :git_author]
+    )
+
+    clean_build_artifacts(
+      exclude_pattern: ".*\.mobileprovision" # don't clear provisioning profiles, as we store them in git
+    )
+  end
+
+
+  error do |lane, exception|
+    slack(
+      message: exception.message,
+      success: false
+    )
+  end
+end

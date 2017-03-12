@@ -21,9 +21,7 @@ module Fastlane
     end
 
     def print
-      STDOUT.puts "-------"
-      STDOUT.puts JSON.pretty_generate(self.tree)
-      STDOUT.puts "-------"
+      STDOUT.puts JSON.pretty_generate(self.tree)      
     end
 
     #####################################################

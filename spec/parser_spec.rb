@@ -12,6 +12,15 @@ describe Fastlane::Parser do
       }])
     end
 
+    it "properly parses actions outside of all platforms and lanes" do
+      expect(@fastfile.tree[nil][nil][:actions]).to eq([
+        {
+          action: :fastlane_version,
+          parameters: '2.0.0'
+        }
+      ])
+    end
+
     describe "properly parses the `beta` lane without a platform" do
       before do
         @beta_lane = @fastfile.tree[nil][:beta]

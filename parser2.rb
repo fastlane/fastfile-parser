@@ -25,10 +25,6 @@ module Fastlane
       @current_description = []
 
       self.parse_children(self.raw_tree)
-
-      require 'pry'; binding.pry
-      puts "done"
-      self.print
     end
 
     def parse_children(node)
@@ -38,6 +34,8 @@ module Fastlane
     end
 
     def parse_node(current_node)
+      return unless current_node.kind_of?(Parser::AST::Node)
+
       if current_node.type == :send # method
         method_name = current_node.children[1]
         parameters = current_node.children[2].children if current_node.children[2]

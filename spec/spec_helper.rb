@@ -1,1 +1,1 @@
-require 'parser'
+require 'fastfile_parser'

@@ -11,7 +11,7 @@ require 'unparser'
 
 # Parse a Fastfile and convert it to JSON data
 module Fastlane
-  class MyParser
+  class FastfileParser
     attr_accessor :path
     attr_accessor :content
     attr_accessor :tree
@@ -43,8 +43,17 @@ module Fastlane
         if parameters && parameters.first && parameters.first.kind_of?(Parser::AST::Node)
           new_parameters = {}
           parameters.each do |current_parameter|
+            parameter_key = current_parameter.children[0].children.last
+
             if current_parameter.type == :pair
-              new_parameters[current_parameter.children[0].children.last] = current_parameter.children[1].children.last
+              # Boolean values are always an exception in Ruby
+              if current_parameter.children[1].type == :true
+                new_parameters[parameter_key] = true # actual boolean, not a symbol
+              elsif current_parameter.children[1].type == :false
+                new_parameters[parameter_key] = false # actual boolean, not a symbol
+              else
+                new_parameters[parameter_key] = current_parameter.children[1].children.last
+              end
             end
           end
           parameters = new_parameters
@@ -71,7 +80,6 @@ module Fastlane
           @current_lane = nil
         elsif method_name == :lane
           lane_name = current_node.children[0].children[2].children.last
-
           @current_lane = lane_name
           access_current_node[:description] = @current_description
           @current_description = []
@@ -79,10 +87,9 @@ module Fastlane
           @current_lane = nil
         elsif method_name == :platform
           platform_name = current_node.children[0].children[2].children.last
-          @current_platform = platform_name
-          # require 'pry'; binding.pry
-          # parse_children(block_node)# if block_node.type == :block
-          #parse_node(block_node) if block_node.type == :begin # this is different for nested blocks with no methods inbetween
+          # @current_platform = platform_name
+          # parse_children(block_node) if block_node.type == :block
+          # parse_node(block_node) if block_node.type == :begin # this is different for nested blocks with no methods inbetween
           @current_platform = nil
         else
           access_current_node[:actions] << {
@@ -121,6 +128,7 @@ end
 #           "action": "gym",
 #           "parameters": {
 #             "scheme": "Example"
+#           }
 #         }
 #       ]
 #     }

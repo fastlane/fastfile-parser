@@ -1,36 +1,51 @@
 fastlane_version "2.0.0"
 
 before_all do
-  git_pull
+  git_pull(something: 123, something2: "value2")
+  cocoapods
 end
 
 desc "Automatic Beta Deployment"
 desc "Multiple lines"
 lane :beta do
+  # Test basic calls
   sigh
-  gym(scheme: "Example", force: true)
+
+  # Test blocks
+  10.times do
+    yolo
+  end
+
+  # Test loops
+  if 10 + 10 == 100
+    while something
+      puts 'hi'
+    end
+  end
+
+  gym(scheme: "Example", force: true) # test booleans, and strings
+  snapshot(number_of_retries: 25) # test ints
+  snapshot(number_of_retries: 25.12) # test floats
 end
 
-platform :ios do
-  before_all do
-    cocoapods
-  end
+# Expected output:
+# 
+#  {:description=>[],
+#   :actions=>[{:action=>:fastlane_version, :parameters=>"2.0.0"}]},
+# :_before_all_block_=>
+#  {:description=>[],
+#   :actions=>
+#    [{:action=>:git_pull,
+#      :parameters=>{:something=>123, :something2=>"value2"}},
+#     {:action=>:git_pull, :parameters=>nil}]},
+# :beta=>
+#  {:description=>["Automatic Beta Deployment", "Multiple lines"],
+#   :actions=>
+#    [{:action=>:sigh, :parameters=>nil},
+#     {:advancedCode=>"10.times do\n  yolo\nend"},
+#     {:advancedCode=>
+#       "if ((10 + 10) == 100)\n  while something\n    puts(\"hi\")\n  end\nend"},
+#     {:action=>:gym, :parameters=>{:scheme=>"Example", :force=>true}},
+#     {:action=>:snapshot, :parameters=>{:number_of_retries=>25}},
+#     {:action=>:snapshot, :parameters=>{:number_of_retries=>25.12}}]}}}
 
-  lane :appstore do
-    slack(something: true)
-  end
-
-  after_all do
-    slack
-  end
-
-  error do
-    slack(success: false)
-  end
-end
-
-platform :android do
-  lane :play do
-    gradle(task: "yolo")
-  end
-end

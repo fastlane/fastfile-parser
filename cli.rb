@@ -1,3 +1,6 @@
-require_relative './parser'
+require './fastfile_parser'
+
 path = ARGV.shift
-Fastlane::Parser.new(path: path).print
+parser = Fastlane::FastfileParser.new(path: path)
+puts "[-------]"
+parser.print

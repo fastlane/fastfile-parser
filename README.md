@@ -1,2 +1,3 @@
 # fastfile-parser
-Convert the Fastfile to a JSON file
+
+Converts a `Fastfile` to JSON

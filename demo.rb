@@ -1,4 +1,4 @@
-require './parser'
+require './fastfile_parser'
 
-Fastlane::Parser.new(path: "./examples/Fastfile1").print
-Fastlane::Parser.new(path: "./examples/Fastfile2").print
+Fastlane::FastfileParser.new(path: "./examples/Fastfile1").print
+Fastlane::FastfileParser.new(path: "./examples/Fastfile2").print

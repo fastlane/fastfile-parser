@@ -29,6 +29,16 @@ describe Fastlane::FastfileParser do
       ])
     end
 
+    describe "private lane is public" do
+      before do
+        @helper_lane = @fastfile.tree[nil][:helper]
+      end
+
+      it "private lanes are private" do
+        expect(@helper_lane[:private]).to eq(true)
+      end
+    end
+
     describe "properly parses the `beta` lane without a platform" do
       before do
         @beta_lane = @fastfile.tree[nil][:beta]
@@ -36,6 +46,10 @@ describe Fastlane::FastfileParser do
 
       it "parses the description" do
         expect(@beta_lane[:description]).to eq(["Automatic Beta Deployment", "Multiple lines"])
+      end
+
+      it "public lanes are public" do
+        expect(@beta_lane[:private]).to eq(false)
       end
       
       it "parses the actions with all their parameters" do

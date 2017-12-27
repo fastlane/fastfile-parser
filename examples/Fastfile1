@@ -28,6 +28,10 @@ lane :beta do
   snapshot(number_of_retries: 25.12) # test floats
 end
 
+private_lane :helper do
+  sigh
+end
+
 # Expected output:
 # 
 #  {:description=>[],

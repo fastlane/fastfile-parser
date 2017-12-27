@@ -78,20 +78,31 @@ module Fastlane
           @current_lane = :_before_all_block_
           parse_children(block_node)
           @current_lane = nil
-        elsif method_name == :lane
+        elsif method_name == :after_all
+          @current_lane = :_after_all_block_
+          parse_children(block_node)
+          @current_lane = nil
+        elsif method_name == :error
+          @current_lane = :_error_block_
+          parse_children(block_node)
+          @current_lane = nil
+        elsif method_name == :lane || method_name == :private_lane
           lane_name = current_node.children[0].children[2].children.last
           @current_lane = lane_name
           access_current_node[:description] = @current_description
+          access_current_node[:private] = method_name == :private_lane
           @current_description = []
           parse_children(block_node)
           @current_lane = nil
         elsif method_name == :platform
           platform_name = current_node.children[0].children[2].children.last
-          # @current_platform = platform_name
+          @current_platform = platform_name
           # parse_children(block_node) if block_node.type == :block
-          # parse_node(block_node) if block_node.type == :begin # this is different for nested blocks with no methods inbetween
+          # require 'pry'; binding.pry if block_node.type == :block
+          parse_children(block_node) if block_node.type == :begin # this is different for nested blocks with no methods inbetween
           @current_platform = nil
         else
+          # require 'pry'; binding.pry
           access_current_node[:actions] << {
             advancedCode: Unparser.unparse(current_node)
           }

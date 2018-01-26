@@ -71,9 +71,12 @@ describe Fastlane::FastfileParser do
     end
 
     # This test is just one big test, so to debug the specific issue, better use the tests above
-    # it "parses the whole file correctly" do
-    #   require 'pry'; binding.pry
-    #   expect(@fastfile.tree).to eq(nil)
-    # end
+    it "parses all the available lanes correctly" do
+      tree = @fastfile.tree
+      expect(tree[:ios][:beta]).to be_kind_of(Hash)
+      expect(tree[nil][:something]).to be_kind_of(Hash)
+      expect(tree[:android][:lane1]).to be_kind_of(Hash)
+      expect(tree[:android][:lane2]).to be_kind_of(Hash)
+    end
   end
 end

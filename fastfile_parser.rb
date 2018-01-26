@@ -27,6 +27,19 @@ module Fastlane
       self.parse_children(self.raw_tree)
     end
 
+    # @return value looks like the following
+    #   ["no_platform_lane_name", "ios beta", "android lane1", "android lane2"]
+    def available_lanes
+      lanes = []
+      self.tree.each do |platform, value|
+        value.each do |lane_name, lane_content|
+          lanes << [platform, lane_name].compact.join(" ")
+        end
+      end
+      lanes.delete_if { |l| l.to_s.length == 0}
+      return lanes
+    end
+
     def parse_children(node)
       node.children.each do |current_node|
         parse_node(current_node)

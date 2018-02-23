@@ -65,7 +65,7 @@ describe Fastlane::FastfileParser do
     end
   end
 
-  describe "Sample Fastfile 2", now: true do
+  describe "Sample Fastfile 2" do
     before do
       @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile2")
     end
@@ -77,6 +77,18 @@ describe Fastlane::FastfileParser do
       expect(tree[nil][:something]).to be_kind_of(Hash)
       expect(tree[:android][:lane1]).to be_kind_of(Hash)
       expect(tree[:android][:lane2]).to be_kind_of(Hash)
+    end
+  end
+
+  describe "Sample Fastfile 3 (simple)", now: true do
+    before do
+      @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile3")
+    end
+
+    it "works" do
+      tree = @fastfile.tree
+      expect(tree[nil][:test]).to eq({:description=>[], :actions=>[{:action=>:no_u, :parameters=>nil}], :private=>false})
+      expect(tree[nil][:test2]).to eq({:description=>[], :actions=>[{:action=>:no_u_2, :parameters=>nil}], :private=>false})
     end
   end
 end

@@ -1,0 +1,15 @@
+lane :test do
+  no_u
+end
+
+lane :test2 do
+  no_u_2
+end
+
+private_lane :private do
+  such_private_action
+end
+
+error do
+  error_method
+end

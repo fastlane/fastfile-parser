@@ -21,7 +21,6 @@ module Fastlane
       self.tree = {}
       self.raw_tree = ::Parser::CurrentRuby.parse(self.content)
       @current_description = []
-      @current_extras = []
 
       self.parse_children(self.raw_tree)
     end

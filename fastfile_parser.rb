@@ -3,7 +3,6 @@ require 'parser'
 require 'parser/current'
 require 'unparser'
 
-
 # opt-in to most recent AST format:
 # Parser::Builders::Default.emit_lambda = true
 # Parser::Builders::Default.emit_procarg0 = true
@@ -40,8 +39,16 @@ module Fastlane
     end
 
     def parse_children(node)
-      node.children.each do |current_node|
-        parse_node(current_node)
+      if node.children.any? { |current_node| current_node.is_a?(Parser::AST::Node) }
+        if node.type == :send
+          parse_node(node)
+        else
+          node.children.each do |current_node|
+            parse_node(current_node)
+          end
+        end
+      else
+        parse_node(node)
       end
     end
 
@@ -134,7 +141,7 @@ module Fastlane
     end
 
     def print
-      STDOUT.puts JSON.pretty_generate(self.tree)      
+      STDOUT.puts JSON.pretty_generate(self.tree)
     end
   end
 end

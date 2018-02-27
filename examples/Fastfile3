@@ -2,6 +2,10 @@ lane :test do
   no_u
 end
 
+lane :test_arguments do
+  no_u_3(argument: "hello")
+end
+
 lane :test2 do
   no_u_2
 end

@@ -42,10 +42,13 @@ module Fastlane
 
     # @return a Hash containing all lanes, with the `platform lane_name` as key, and
     #         the lane content as value. This allows easier iteration over all the lanes
-    def all_lanes_flat
+    # @parameter [ignore_actions_outside_of_lanes] this would ignore `nil nil` or "" actions
+    #         e.g. the `default_platform` action
+    def all_lanes_flat(ignore_actions_outside_of_lanes: false)
       all_lanes = {} # we make things flat
       self.tree.each do |platform, lanes|
         lanes.each do |lane_name, lane_content|
+          next if ignore_actions_outside_of_lanes && platform == nil && lane_name == nil
           full_lane_name = [platform, lane_name].compact.join(" ")
           all_lanes[full_lane_name] = lane_content
         end

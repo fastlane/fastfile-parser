@@ -15,7 +15,9 @@ module Fastlane
     attr_accessor :tree
     attr_accessor :raw_tree
 
-    def initialize(path: nil)
+    def initialize(path:)
+      raise "Fastfile path must not be nil" if path.nil?
+
       self.path = path
       self.content = File.read(path)
       self.tree = {}

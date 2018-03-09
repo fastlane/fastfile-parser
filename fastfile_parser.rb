@@ -40,6 +40,20 @@ module Fastlane
       return lanes
     end
 
+    # @return a Hash containing all lanes, with the `platform lane_name` as key, and
+    #         the lane content as value. This allows easier iteration over all the lanes
+    def all_lanes_flat
+      all_lanes = {} # we make things flat
+      self.tree.each do |platform, lanes|
+        lanes.each do |lane_name, lane_content|
+          full_lane_name = [platform, lane_name].compact.join(" ")
+          all_lanes[full_lane_name] = lane_content
+        end
+      end
+
+      return all_lanes
+    end
+
     def parse_children(node)
       if node.children.any? { |current_node| current_node.is_a?(Parser::AST::Node) }
         if node.type == :send

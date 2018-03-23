@@ -1,3 +1,10 @@
+PATH
+  remote: .
+  specs:
+    fastfile-parser (0.0.0)
+      parser (>= 2.4.0.2, < 2.5.0.0)
+      unparser (>= 0.2.6, < 1.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -49,10 +56,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  parser
+  fastfile-parser!
   pry
   rspec
-  unparser
 
 BUNDLED WITH
    1.14.6

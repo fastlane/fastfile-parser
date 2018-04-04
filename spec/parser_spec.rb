@@ -92,4 +92,26 @@ describe Fastlane::FastfileParser do
       expect(tree[nil][:test2]).to eq({:description=>[], :actions=>[{:action=>:no_u_2, :parameters=>nil}], :private=>false})
     end
   end
+
+  describe "Sample Fastfile 4 (simple)" do
+    before do
+      @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile4")
+    end
+
+    it "works with lanes without platform" do
+      tree = @fastfile.tree
+      expect(tree[:ios].keys).to eq([:test])
+    end
+  end
+
+  describe "Sample Fastfile 5 (complex)", now: true do
+    before do
+      @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile5")
+    end
+
+    it "works with lanes without platform" do
+      tree = @fastfile.tree
+      expect(tree[nil].keys).to eq([nil, :_before_all_block_, :ship_beta, :_error_block_])
+    end
+  end
 end

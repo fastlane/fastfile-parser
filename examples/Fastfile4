@@ -1,0 +1,8 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :test do
+    gym(skip_package_ipa: false, clean: true, project: "../fastlane-ci-demoapp.xcodeproj", scheme: "fastlane-ci-demoapp")
+  end
+end

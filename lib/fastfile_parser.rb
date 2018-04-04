@@ -81,6 +81,8 @@ module Fastlane
         if parameters && parameters.first && parameters.first.kind_of?(Parser::AST::Node)
           new_parameters = {}
           parameters.each do |current_parameter|
+            next unless current_parameter.kind_of?(Parser::AST::Node)
+            next unless current_parameter.children[0].kind_of?(Parser::AST::Node)
             parameter_key = current_parameter.children[0].children.last
 
             if current_parameter.type == :pair

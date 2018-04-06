@@ -10,16 +10,21 @@ require 'unparser'
 # Parse a Fastfile and convert it to JSON data
 module Fastlane
   class FastfileParser
-    attr_accessor :path
     attr_accessor :content
     attr_accessor :tree
     attr_accessor :raw_tree
 
-    def initialize(path:)
-      raise "Fastfile path must not be nil" if path.nil?
+    def initialize(file_content: nil, path: nil)
+      if (file_content.nil? && path.nil?) || (file_content && path)
+        raise "You must supply one and only one of the following params: `file_content` or `path`"
+      end
 
-      self.path = path
-      self.content = File.read(path)
+      if path
+        self.content = File.read(path)
+      else
+        self.content = file_content
+      end
+
       self.tree = {}
       self.raw_tree = ::Parser::CurrentRuby.parse(self.content)
       @current_description = []

@@ -14,18 +14,17 @@ module Fastlane
     attr_accessor :tree
     attr_accessor :raw_tree
 
-    def initialize(file_content:)
-      self.content = file_content
-      common_init
-    end
+    def initialize(file_content: nil, path: nil)
+      if (file_content.nil? && path.nil?) || (file_content && path)
+        raise "You must supply one and only one of the following params: `file_content` or `path`"
+      end
 
-    def initialize(path:)
-      self.content = File.read(path)
+      if path
+        self.content = File.read(path)
+      else
+        self.content = file_content
+      end
 
-      common_init
-    end
-
-    def common_init
       self.tree = {}
       self.raw_tree = ::Parser::CurrentRuby.parse(self.content)
       @current_description = []

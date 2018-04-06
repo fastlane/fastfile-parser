@@ -1,4 +1,23 @@
 describe Fastlane::FastfileParser do
+  describe "Initializers" do
+    it "only allows 1 param in the initializer" do
+      expect {
+        Fastlane::FastfileParser.new(path: "./examples/Fastfile1", file_content: "tacos")
+      }.to (raise_exception)
+    end
+
+    it "properly parses when using the file_content initializer" do
+      file_content = File.read("./examples/Fastfile2")
+
+      fastfile = Fastlane::FastfileParser.new(file_content: file_content)
+      tree = fastfile.tree
+      expect(tree[:ios][:beta]).to be_kind_of(Hash)
+      expect(tree[nil][:something]).to be_kind_of(Hash)
+      expect(tree[:android][:lane1]).to be_kind_of(Hash)
+      expect(tree[:android][:lane2]).to be_kind_of(Hash)
+    end
+  end
+
   describe "Sample Fastfile 1" do
     before do
       @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile1")

@@ -123,7 +123,7 @@ describe Fastlane::FastfileParser do
     end
   end
 
-  describe "Sample Fastfile 5 (complex)", now: true do
+  describe "Sample Fastfile 5 (complex)" do
     before do
       @fastfile = Fastlane::FastfileParser.new(path: "./examples/Fastfile5")
     end
